@@ -64,18 +64,71 @@ class ResBlk(nn.Module):
         return x / math.sqrt(2)  # unit variance
 
 
-class AdaIN(nn.Module):
-    def __init__(self, style_dim, num_features):
-        super().__init__()
-        self.norm = nn.InstanceNorm2d(num_features, affine=False)
-        self.fc = nn.Linear(style_dim, num_features*2)
+from core.args import ARGS, parser
 
-    def forward(self, x, s):
-        h = self.fc(s)
-        h = h.view(h.size(0), h.size(1), 1, 1)
-        gamma, beta = torch.chunk(h, chunks=2, dim=1)
-        return (1 + gamma) * self.norm(x) + beta
+# class AdaIN(nn.Module):
+#     def __init__(self, style_dim, num_features):
+#         super().__init__()
+#         self.norm = nn.InstanceNorm2d(num_features, affine=False)
+#         self.fc = nn.Linear(style_dim, num_features*2)
 
+#     def forward(self, x, s):
+#         h = self.fc(s)
+#         h = h.view(h.size(0), h.size(1), 1, 1)
+#         gamma, beta = torch.chunk(h, chunks=2, dim=1)
+#         return (1 + gamma) * self.norm(x) + beta
+
+if ARGS.method == 'baseline':
+    class AdaIN(nn.Module):
+        def __init__(self, style_dim, num_features):
+            super().__init__()
+            self.norm = nn.InstanceNorm2d(num_features, affine=False)
+            self.fc = nn.Linear(style_dim, num_features*2)
+
+            print("=================")
+            print("Baseline")
+            print("=================")
+
+        def forward(self, x, s):
+            h = self.fc(s)
+            h = h.view(h.size(0), h.size(1), 1, 1)
+            gamma, beta = torch.chunk(h, chunks=2, dim=1)
+
+            return (1 + gamma) * self.norm(x) + beta
+            
+elif ARGS.method == 'whitening':
+    import adaiw
+    
+    class AdaIN(adaiw.BlockwiseAdaIN):
+        def __init__(self, style_size, num_features):
+            if ARGS.num_blocks != -1:
+                assert (num_features / ARGS.num_blocks).is_integer()
+                block_size = min(num_features // ARGS.num_blocks, num_features)
+                print("NUM FEATURES", num_features)
+                print("NUM BLOCKS", ARGS.num_blocks, "FINAL BLOCK SIZE", block_size)
+            else:
+                block_size = ARGS.block_size
+            super().__init__(
+                style_size,
+                num_features,
+                projection_type = adaiw.MLPProjection if ARGS.use_mlp else adaiw.AffineProjection,
+                normalizer_type = getattr(adaiw, ARGS.normalizer_type),
+                learn_alpha_white = ARGS.learn_alpha_white,
+                learn_alpha_color = ARGS.learn_alpha_color,
+                shift_mean = ARGS.use_mean_shift,
+                make_color_symmetric = ARGS.make_color_symmetric,
+                make_positive_definite = ARGS.make_positive_definite,
+                center_color_at_identity = ARGS.center_color_at_identity,
+                block_size = block_size,
+                alpha_white = ARGS.alpha_white, 
+                alpha_color = ARGS.alpha_color
+            )
+            print("=================")
+            print("Blockwise AdaIN")
+            print(self)
+            self.normalizer.num_iters = ARGS.num_whitening_iters
+            print(self.normalizer)
+            print("=================")
 
 class AdainResBlk(nn.Module):
     def __init__(self, dim_in, dim_out, style_dim=64, w_hpf=0,

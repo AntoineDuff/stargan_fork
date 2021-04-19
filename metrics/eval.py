@@ -27,6 +27,7 @@ def calculate_metrics(nets, args, step, mode):
     print('Calculating evaluation metrics...')
     assert mode in ['latent', 'reference']
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    torch.manual_seed(args.eval_seed)
 
     domains = os.listdir(args.val_img_dir)
     domains.sort()
@@ -117,6 +118,8 @@ def calculate_metrics(nets, args, step, mode):
 
     # calculate and report fid values
     calculate_fid_for_all_tasks(args, domains, step=step, mode=mode)
+
+    torch.seed()
 
 
 def calculate_fid_for_all_tasks(args, domains, step, mode):
