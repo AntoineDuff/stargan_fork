@@ -6,13 +6,13 @@
 #SBATCH --mem=16000M            # memory per node
 #SBATCH --time=0-24:00           # time (DD-HH:MM)
 
-EXPR="np_pre_norm_baseline_64"
+EXPR="test"
 echo "🚀 $EXPR"
 
 nvidia-smi
 
 echo "👉 Activating environment"
-cd $SCRATCH/stargan-v2
+cd $SCRATCH/stargan_fork
 source load_slurm_modules.sh
 source $HOME/stargan-v2-env/bin/activate
 
