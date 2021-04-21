@@ -1,6 +1,7 @@
 # perso ignores
 .vscode/
 slurm*
+expr/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

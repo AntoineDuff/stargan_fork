@@ -6,7 +6,7 @@
 #SBATCH --mem=16000M            # memory per node
 #SBATCH --time=0-24:00           # time (DD-HH:MM)
 
-EXPR="test"
+EXPR="baseline_128"
 echo "🚀 $EXPR"
 
 nvidia-smi
@@ -34,7 +34,7 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --lambda_reg 1 --lambda_sty 1 --lambda_ds 2 --lambda_cyc 1 \
                --train_img_dir data/afhq/train \
                --val_img_dir data/afhq/val \
-               --img_size 64 \
+               --img_size 128 \
                --checkpoint_dir expr/"$EXPR"/checkpoints/afhq \
                --result_dir expr/"$EXPR"/results/afhq \
                --sample_dir expr/"$EXPR"/samples/afhq \
@@ -43,4 +43,5 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --lm_path expr/"$EXPR"/checkpoints/celeba_lm_mean.npz \
                --notes_path expr/"$EXPR" \
                --use_mean_shift False \
+               --use_mlp False
                "$@"

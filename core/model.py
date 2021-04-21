@@ -132,13 +132,15 @@ elif ARGS.method == 'whitening':
 
 class AdainResBlk(nn.Module):
     def __init__(self, dim_in, dim_out, style_dim=64, w_hpf=0,
-                 actv=nn.LeakyReLU(0.2), upsample=False):
+                 actv=nn.LeakyReLU(0.2), upsample=False, rescale_std=True):
         super().__init__()
         self.w_hpf = w_hpf
         self.actv = actv
         self.upsample = upsample
         self.learned_sc = dim_in != dim_out
         self._build_weights(dim_in, dim_out, style_dim)
+
+        self.rescale_std = rescale_std
 
     def _build_weights(self, dim_in, dim_out, style_dim=64):
         self.conv1 = nn.Conv2d(dim_in, dim_out, 3, 1, 1)
@@ -156,11 +158,15 @@ class AdainResBlk(nn.Module):
         return x
 
     def _residual(self, x, s):
+        if self.rescale_std:
+            x = x / x.std(dim=(1, 2, 3), keepdim=True)
         x = self.norm1(x, s)
         x = self.actv(x)
         if self.upsample:
             x = F.interpolate(x, scale_factor=2, mode='nearest')
         x = self.conv1(x)
+        if self.rescale_std:
+            x = x / x.std(dim=(1, 2, 3), keepdim=True)
         x = self.norm2(x, s)
         x = self.actv(x)
         x = self.conv2(x)

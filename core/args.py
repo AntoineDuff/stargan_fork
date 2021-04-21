@@ -32,7 +32,7 @@ parser.add_argument('--lambda_sty', type=float, default=1,
                     help='Weight for style reconstruction loss')
 parser.add_argument('--lambda_ds', type=float, default=1,
                     help='Weight for diversity sensitive loss')
-parser.add_argument('--ds_iter', type=int, default=100000,
+parser.add_argument('--ds_iter', type=int, default=51000, #100000
                     help='Number of iterations to optimize diversity sensitive loss')
 parser.add_argument('--w_hpf', type=float, default=1,
                     help='weight for high-pass filtering')
@@ -40,7 +40,7 @@ parser.add_argument('--w_hpf', type=float, default=1,
 # training arguments
 parser.add_argument('--randcrop_prob', type=float, default=0.5,
                     help='Probabilty of using random-resized cropping')
-parser.add_argument('--total_iters', type=int, default=100000,
+parser.add_argument('--total_iters', type=int, default=51000, #100000
                     help='Number of total iterations')
 parser.add_argument('--resume_iter', type=int, default=0,
                     help='Iterations to resume training/testing')
@@ -111,7 +111,7 @@ parser.add_argument('--lm_path', type=str, default='expr/checkpoints/celeba_lm_m
 parser.add_argument('--print_every', type=int, default=100)
 parser.add_argument('--sample_every', type=int, default=5000)
 parser.add_argument('--save_every', type=int, default=50000)
-parser.add_argument('--eval_every', type=int, default=50000)
+parser.add_argument('--eval_every', type=int, default=25000)
 
 parser.add_argument('--print_learned', type=int, default=1000)
 parser.add_argument('--print_std', type=int, default=1000)
@@ -122,8 +122,8 @@ parser.add_argument('--alpha_color', type=float, default=1.0)
 parser.add_argument('--notes_path', type=str, default='expr/')
 
 # Vanilla
-parser.add_argument('--method', type=str, default='baseline', choices=['whitening', 'std', 'baseline', 'ortho'])
-parser.add_argument('--use_mlp', type=parse_bool, default=True)
+parser.add_argument('--method', type=str, default='whitening', choices=['whitening', 'std', 'baseline', 'ortho'])
+parser.add_argument('--use_mlp', type=parse_bool, default=False)
 parser.add_argument('--learn_alpha_white', type=parse_bool, default=False)
 parser.add_argument('--learn_alpha_color', type=parse_bool, default=False)
 parser.add_argument('--normalizer_type', type=str, default='BlockwiseWhitening')
@@ -135,7 +135,17 @@ parser.add_argument('--center_color_at_identity', type=parse_bool, default=False
 parser.add_argument('--block_size', type=int, default=64)
 parser.add_argument('--num_blocks', type=int, default=-1)
 
-import sys 
+import sys
+import json
+import os
+
 ARGS = parser.parse_args()
+
+#save args as json file
+os.makedirs(ARGS.eval_dir, exist_ok=True)
+file_name = os.path.join(ARGS.eval_dir, "args.json")
+    with open(file_name, "wt") as f:
+            json.dump(vars(ARGS), f, indent=4)
+            
 print(sys.argv)
 print(ARGS)
