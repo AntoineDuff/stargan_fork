@@ -144,8 +144,8 @@ ARGS = parser.parse_args()
 #save args as json file
 os.makedirs(ARGS.eval_dir, exist_ok=True)
 file_name = os.path.join(ARGS.eval_dir, "args.json")
-    with open(file_name, "wt") as f:
-            json.dump(vars(ARGS), f, indent=4)
+with open(file_name, "wt") as f:
+        json.dump(vars(ARGS), f, indent=4)
             
 print(sys.argv)
 print(ARGS)
