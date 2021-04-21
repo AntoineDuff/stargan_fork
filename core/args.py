@@ -122,7 +122,7 @@ parser.add_argument('--alpha_color', type=float, default=1.0)
 parser.add_argument('--notes_path', type=str, default='expr/')
 
 # Vanilla
-parser.add_argument('--method', type=str, default='whitening', choices=['whitening', 'std', 'baseline', 'ortho'])
+parser.add_argument('--method', type=str, default='baseline', choices=['whitening', 'std', 'baseline', 'ortho'])
 parser.add_argument('--use_mlp', type=parse_bool, default=False)
 parser.add_argument('--learn_alpha_white', type=parse_bool, default=False)
 parser.add_argument('--learn_alpha_color', type=parse_bool, default=False)
@@ -134,6 +134,7 @@ parser.add_argument('--make_positive_definite', type=parse_bool, default=True)
 parser.add_argument('--center_color_at_identity', type=parse_bool, default=False)
 parser.add_argument('--block_size', type=int, default=64)
 parser.add_argument('--num_blocks', type=int, default=-1)
+parser.add_argument('--args_json_dir', type=str, default='expr/')
 
 import sys
 import json
@@ -142,8 +143,8 @@ import os
 ARGS = parser.parse_args()
 
 #save args as json file
-os.makedirs(ARGS.eval_dir, exist_ok=True)
-file_name = os.path.join(ARGS.eval_dir, "args.json")
+os.makedirs(ARGS.args_json_dir, exist_ok=True)
+file_name = os.path.join(ARGS.args_json_dir, "args.json")
 with open(file_name, "wt") as f:
         json.dump(vars(ARGS), f, indent=4)
             

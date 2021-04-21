@@ -43,5 +43,6 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --lm_path expr/"$EXPR"/checkpoints/celeba_lm_mean.npz \
                --notes_path expr/"$EXPR" \
                --use_mean_shift False \
-               --use_mlp False
+               --use_mlp False \
+               --args_json_dir expr/"$EXPR"
                "$@"

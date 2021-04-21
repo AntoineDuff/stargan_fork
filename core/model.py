@@ -132,7 +132,7 @@ elif ARGS.method == 'whitening':
 
 class AdainResBlk(nn.Module):
     def __init__(self, dim_in, dim_out, style_dim=64, w_hpf=0,
-                 actv=nn.LeakyReLU(0.2), upsample=False, rescale_std=True):
+                 actv=nn.LeakyReLU(0.2), upsample=False, rescale_std=False):
         super().__init__()
         self.w_hpf = w_hpf
         self.actv = actv
