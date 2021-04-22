@@ -44,5 +44,6 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --notes_path expr/"$EXPR" \
                --use_mean_shift False \
                --use_mlp False \
-               --args_json_dir expr/"$EXPR"
+               --args_json_dir expr/"$EXPR" \
+               --rescale_std True
                "$@"

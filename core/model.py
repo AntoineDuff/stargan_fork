@@ -214,7 +214,7 @@ class Generator(nn.Module):
                 ResBlk(dim_in, dim_out, normalize=True, downsample=True))
             self.decode.insert(
                 0, AdainResBlk(dim_out, dim_in, style_dim,
-                               w_hpf=w_hpf, upsample=True))  # stack-like
+                               w_hpf=w_hpf, upsample=True, rescale_std=ARGS.rescale_std))  # stack-like
             dim_in = dim_out
 
         # bottleneck blocks
@@ -222,7 +222,7 @@ class Generator(nn.Module):
             self.encode.append(
                 ResBlk(dim_out, dim_out, normalize=True))
             self.decode.insert(
-                0, AdainResBlk(dim_out, dim_out, style_dim, w_hpf=w_hpf))
+                0, AdainResBlk(dim_out, dim_out, style_dim, w_hpf=w_hpf, rescale_std=ARGS.rescale_std))
 
         if w_hpf > 0:
             device = torch.device(
