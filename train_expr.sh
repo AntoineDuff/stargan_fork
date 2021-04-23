@@ -6,7 +6,7 @@
 #SBATCH --mem=16000M            # memory per node
 #SBATCH --time=0-24:00           # time (DD-HH:MM)
 
-EXPR="baseline_128"
+EXPR="WC_128_sd_256_ld_128"
 echo "🚀 $EXPR"
 
 nvidia-smi
@@ -43,7 +43,9 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --lm_path expr/"$EXPR"/checkpoints/celeba_lm_mean.npz \
                --notes_path expr/"$EXPR" \
                --use_mean_shift False \
-               --use_mlp False \
+               --use_mlp True \
                --args_json_dir expr/"$EXPR" \
-               --rescale_std False
+               --rescale_std True \
+               --latent_dim 128 \
+               --style_dim 256 \
                "$@"
