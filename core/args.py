@@ -3,8 +3,6 @@ import sys
 import json
 import os
 
-parser = argparse.ArgumentParser()
-
 def parse_bool(x):
     assert isinstance(x, str)
     if x == "True":
@@ -14,6 +12,8 @@ def parse_bool(x):
     else: 
         assert False, "Arg must be 'True' or 'False'"
 
+
+parser = argparse.ArgumentParser()
 # model arguments
 parser.add_argument('--img_size', type=int, default=256,
                     help='Image resolution')
@@ -139,16 +139,15 @@ parser.add_argument('--block_size', type=int, default=64)
 parser.add_argument('--num_blocks', type=int, default=-1)
 parser.add_argument('--args_json_dir', type=str, default='expr/')
 parser.add_argument('--rescale_std', type=parse_bool, default=False)
-parser.add_argument('--json_file', type=str, default=None)
 
 ARGS = parser.parse_args()
-
-if ARGS.json_file:
-    print('Args from: ', ARGS.json_file)
-    with open(json_file, "rt") as f:
+json_file = os.path.join(ARGS.args_json_dir, 'args.json')
+if os.path.exists(json_file):
+    print('Use args from json: ', json_file, '\n')
+    with open(json_file, 'rt') as f:
         ARGS = argparse.Namespace()
         ARGS.__dict__.update(json.load(f))
-        ARGS = parser.parse_args(namespace=ARGS)
+        # ARGS = parser.parse_args(namespace=t_args)
 else:
     #save args as json file
     os.makedirs(ARGS.args_json_dir, exist_ok=True)
@@ -156,5 +155,5 @@ else:
     with open(file_name, "wt") as f:
             json.dump(vars(ARGS), f, indent=4)
             
-print(sys.argv)
+print(sys.argv, '\n')
 print(ARGS)
