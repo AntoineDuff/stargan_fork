@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --account=def-jlalonde
-#SBATCH --gres=gpu:v100:1             # Number of GPU(s) per node
+#SBATCH --gres=gpu:v100l:1             # Number of GPU(s) per node
 #SBATCH --cpus-per-task=8          # CPU cores/threads
 #SBATCH --mem=16000M            # memory per node
-#SBATCH --time=0-24:00           # time (DD-HH:MM)
+#SBATCH --time=0-48:00           # time (DD-HH:MM)
 
 EXPR="WC_128_sd_256_ld_128"
 echo "🚀 $EXPR"
@@ -48,4 +48,6 @@ python main.py --mode train --num_domains 3 --w_hpf 0 \
                --rescale_std True \
                --latent_dim 128 \
                --style_dim 256 \
+               --make_color_symmetric True \
+               --make_positive_definite True
                "$@"
